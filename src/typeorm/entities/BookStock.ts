@@ -18,9 +18,15 @@ export class BookStock {
   @Column()
   shelf: string;
   @ManyToOne(() => Distributor, (distributor) => distributor.bookStocks)
-  distributor!: Distributor;
+  distributor: Distributor;
   @ManyToOne(() => Book, (book) => book.bookStocks)
-  book!: Book;
+  book: Book;
   @OneToOne(() => Reservation)
   reservation: Reservation;
+  public addDistributors(distributor: Distributor) {
+    this.distributor = distributor;
+  }
+  public addBook(book: Book) {
+    this.book = book;
+  }
 }

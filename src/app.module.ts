@@ -19,6 +19,7 @@ import { PublishersModule } from './publishers/publishers.module';
 import { DistributorsModule } from './distributors/distributors.module';
 import { GenresModule } from './genres/genres.module';
 import { AuthorsModule } from './authors/authors.module';
+import { BookStocksModule } from './book-stocks/book-stocks.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { AuthorsModule } from './authors/authors.module';
     DistributorsModule,
     GenresModule,
     AuthorsModule,
+    BookStocksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

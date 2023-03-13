@@ -33,7 +33,7 @@ export class Book {
   @ManyToMany(() => Publisher, (publisher) => publisher.books)
   @JoinTable({ name: 'books_publishers' })
   publishers: Publisher[];
-  @OneToMany(() => BookStock, (bookstock) => bookstock.book)
+  @OneToMany(() => BookStock, (bookstock) => bookstock.book, {onDelete: 'CASCADE'})
   @JoinTable()
   bookStocks: BookStock[];
 

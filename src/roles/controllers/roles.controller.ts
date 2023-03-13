@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { createRoleDto } from 'src/roles/dtos/createRole.dto';
 import { updateRoleDto } from 'src/roles/dtos/updateRole.dto';
-import { RolesService } from 'src/roles/services/roles/roles.service';
+import { RolesService } from 'src/roles/services/roles.service';
 
 @Controller('roles')
 export class RolesController {
