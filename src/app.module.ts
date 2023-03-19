@@ -20,6 +20,7 @@ import { DistributorsModule } from './distributors/distributors.module';
 import { GenresModule } from './genres/genres.module';
 import { AuthorsModule } from './authors/authors.module';
 import { BookStocksModule } from './book-stocks/book-stocks.module';
+import { ReservationsService } from './reservations/services/reservations.service';
 
 @Module({
   imports: [
@@ -54,6 +55,6 @@ import { BookStocksModule } from './book-stocks/book-stocks.module';
     BookStocksModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ReservationsService],
 })
 export class AppModule {}
