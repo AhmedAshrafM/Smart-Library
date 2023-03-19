@@ -25,5 +25,9 @@ export class User {
   phone: string;
   @ManyToMany(() => Role)
   @JoinTable({name:'users_roles'})
-  role: Role;
+  roles: Role[];
+
+  public addRoles(roles: Role[]) {
+    this.roles = roles;
+  }
 }
