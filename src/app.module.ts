@@ -20,8 +20,7 @@ import { DistributorsModule } from './distributors/distributors.module';
 import { GenresModule } from './genres/genres.module';
 import { AuthorsModule } from './authors/authors.module';
 import { BookStocksModule } from './book-stocks/book-stocks.module';
-import { ReservationsService } from './reservations/services/reservations.service';
-
+import { ReservationsModule } from './reservations/reservations.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -53,8 +52,9 @@ import { ReservationsService } from './reservations/services/reservations.servic
     GenresModule,
     AuthorsModule,
     BookStocksModule,
+    ReservationsModule
   ],
   controllers: [AppController],
-  providers: [AppService, ReservationsService],
+  providers: [AppService],
 })
 export class AppModule {}

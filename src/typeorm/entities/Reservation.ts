@@ -19,9 +19,9 @@ export class Reservation {
   reservationDate: Date;
   @Column()
   dueDate: Date;
-  @Column()
+  @Column({default: null})
   returnDate: Date;
-  @Column()
+  @Column({default:"pending"})
   reservationStatus: string;
   @ManyToOne(() => User)
   @JoinColumn()
@@ -32,4 +32,10 @@ export class Reservation {
   @OneToOne(() => BookStock, (stock) => stock.reservation)
   @JoinColumn()
   bookStock: BookStock;
+  public addUser(user: User) {
+    this.user = user;
+  }
+  public addBookStock(bookStock: BookStock) {
+    this.bookStock = bookStock;
+  }
 }
