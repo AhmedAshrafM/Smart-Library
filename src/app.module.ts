@@ -21,6 +21,7 @@ import { GenresModule } from './genres/genres.module';
 import { AuthorsModule } from './authors/authors.module';
 import { BookStocksModule } from './book-stocks/book-stocks.module';
 import { ReservationsModule } from './reservations/reservations.module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -52,7 +53,8 @@ import { ReservationsModule } from './reservations/reservations.module';
     GenresModule,
     AuthorsModule,
     BookStocksModule,
-    ReservationsModule
+    ReservationsModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
