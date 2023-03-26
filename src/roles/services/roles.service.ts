@@ -25,4 +25,6 @@ export class RolesService {
     deleteRole(role_id: number){
         return this.rolesRepository.delete(role_id);
     }
+    
 }
+
