@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsString, Min, ValidateNested } from 'class-validator';
 
 export class createBookDto {
   @IsNotEmpty()

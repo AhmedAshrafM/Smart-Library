@@ -6,7 +6,7 @@ import { AuthService } from './auth/auth.service';
 @Dependencies(AuthService)
 @Controller()
 export class AppController {
-  constructor(private authService: AuthService) {
+  constructor(private readonly authService: AuthService) {
     this.authService = authService;
   }
 

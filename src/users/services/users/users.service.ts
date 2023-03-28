@@ -24,6 +24,9 @@ export class UsersService {
     newUser.addRoles(roles);
     return this.usersRepository.save(newUser);
   }
+  async findUserById(id: number){
+    return await this.usersRepository.findOneById(id);
+  }
   updateUser(id: number, updateUserDetails: UpdateUserParams) {
     return this.usersRepository.update( id , { ...updateUserDetails });
   }
