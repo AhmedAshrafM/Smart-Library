@@ -24,7 +24,7 @@ export class UsersController {
   constructor(private userService: UsersService) {}
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Get()
-  @Roles(Role.SuperAdmin)
+  @Roles(Role.Admin || Role.SuperAdmin)
   getUsers() {
     return this.userService.fetchUsers();
   }
@@ -41,6 +41,8 @@ export class UsersController {
   ) {
    await this.userService.updateUser(id,updateUserDto);
   }
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(Role.Admin || Role.SuperAdmin)
   @Delete(':id')
   async deleteUserById(
     @Param('id', ParseIntPipe) id: number) {
