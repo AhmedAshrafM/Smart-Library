@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { stringify } from 'querystring';
-import { JwtAuthGuard } from 'src/auth';
+import { JwtAuthGuard, Public } from 'src/auth';
 import { RolesGuard } from 'src/auth/role.guard';
 import { Roles } from 'src/roles/role.decorator';
 import Role from 'src/roles/role.enum';
@@ -28,7 +28,7 @@ export class UsersController {
   getUsers() {
     return this.userService.fetchUsers();
   }
-
+  @Public()
   @Post('/signup')
   createUser(@Body() body: createUserDto) {
     this.userService.createUser(body);

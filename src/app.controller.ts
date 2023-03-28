@@ -2,6 +2,7 @@ import { Controller, Dependencies, Bind, Get, Request, Post, UseGuards } from '@
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
+import { Public } from './auth';
 
 @Dependencies(AuthService)
 @Controller()
@@ -11,6 +12,7 @@ export class AppController {
   }
 
   @UseGuards(LocalAuthGuard)
+  @Public()
   @Post('auth/login')
   @Bind(Request())
   async login(req) {
