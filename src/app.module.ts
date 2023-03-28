@@ -22,6 +22,7 @@ import { AuthorsModule } from './authors/authors.module';
 import { BookStocksModule } from './book-stocks/book-stocks.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { AuthModule } from './auth/auth.module';
+import { LoggerModule } from './logger/logger.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -54,7 +55,8 @@ import { AuthModule } from './auth/auth.module';
     AuthorsModule,
     BookStocksModule,
     ReservationsModule,
-    AuthModule
+    AuthModule,
+    LoggerModule
   ],
   controllers: [AppController],
   providers: [AppService],
