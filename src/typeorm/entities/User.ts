@@ -5,8 +5,8 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Role } from './Roles';
-
+//import { Role } from './Roles';
+import {Role} from '../../roles/role.enum'
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -23,11 +23,18 @@ export class User {
   createdAt: Date;
   @Column()
   phone: string;
-  @ManyToMany(() => Role)
-  @JoinTable({name:'users_roles'})
-  roles: Role[];
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: [Role.User],
+    
+  })
+  public roles: Role[]
+  //@ManyToMany(() => Role)
+//  @JoinTable({name:'users_roles'})
+ // roles: Role[];
 
-  public addRoles(roles: Role[]) {
-    this.roles = roles;
-  }
+ // public addRoles(roles: Role[]) {
+ //   this.roles = roles;
+//  }
 }

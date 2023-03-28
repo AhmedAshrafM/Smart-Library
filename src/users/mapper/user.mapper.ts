@@ -9,6 +9,7 @@ export const dtoToEntity = (creationDto: createUserDto): User => {
     user.flag = creationDto.flag
     user.phone = creationDto.phone
     user.createdAt = new Date();
+    user.roles = creationDto.roles;
     return user;
   };
 

@@ -1,4 +1,5 @@
 import {IsEmail, IsString} from 'class-validator';
+import Role from 'src/roles/role.enum';
 export class createUserDto {
     @IsString()
     fullName: string;
@@ -8,6 +9,7 @@ export class createUserDto {
     password: string;
     flag: string;
     phone: string;
-    roleIds: number[];
+   // roleIds: number[];
+   roles: Role[]
 
 }

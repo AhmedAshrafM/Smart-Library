@@ -7,8 +7,14 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { stringify } from 'querystring';
+import { JwtAuthGuard } from 'src/auth';
+import { RolesGuard } from 'src/auth/role.guard';
+import { Roles } from 'src/roles/role.decorator';
+import Role from 'src/roles/role.enum';
 import { createUserDto } from 'src/users/dtos/createUser.dto';
 import { updateUserDto } from 'src/users/dtos/updateUser.dto';
 import { UsersService } from 'src/users/services/users/users.service';
@@ -16,8 +22,9 @@ import { UsersService } from 'src/users/services/users/users.service';
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
-
+  @UseGuards(JwtAuthGuard,RolesGuard)
   @Get()
+  @Roles(Role.SuperAdmin)
   getUsers() {
     return this.userService.fetchUsers();
   }

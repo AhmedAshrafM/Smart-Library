@@ -19,9 +19,9 @@ export class UsersService {
   }
 
   async createUser(userDetails: createUserDto) {
-    const roles = await this.rolesRepository.findByIds(userDetails.roleIds);
+   // const roles = await this.rolesRepository.findByIds(userDetails.roleIds);
     let newUser : User = dtoToEntity(userDetails);
-    newUser.addRoles(roles);
+    //newUser.addRoles(roles);
     return this.usersRepository.save(newUser);
   }
   async findUserById(id: number){
