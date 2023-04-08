@@ -14,7 +14,7 @@ export class AuthorsController {
     return this.authorService.fetchAuthors();
   }
   @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles(Role.Admin || Role.SuperAdmin)
+  @Roles(Role.Admin,Role.SuperAdmin)
   @Post()
   createAuthor(@Body() createAuthorDto: createAuthorDto) {
     this.authorService.createAuthor(createAuthorDto);

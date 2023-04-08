@@ -6,6 +6,8 @@ import { createUserDto } from 'src/users/dtos/createUser.dto';
 import { dtoToEntity } from 'src/users/mapper/user.mapper';
 import { CreateUserParams, UpdateUserParams } from 'src/utils/types';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class UsersService {
@@ -22,6 +24,7 @@ export class UsersService {
    // const roles = await this.rolesRepository.findByIds(userDetails.roleIds);
     let newUser : User = dtoToEntity(userDetails);
     //newUser.addRoles(roles);
+    newUser.password = await bcrypt.hash(newUser.password,10)
     return this.usersRepository.save(newUser);
   }
   async findUserById(id: number){

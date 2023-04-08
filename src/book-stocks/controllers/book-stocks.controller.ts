@@ -14,7 +14,7 @@ export class BookStocksController {
         return this.bookStockService.fetchBookStock();
       }
       @UseGuards(JwtAuthGuard,RolesGuard)
-      @Roles(Role.Admin || Role.SuperAdmin)
+      @Roles(Role.Admin,Role.SuperAdmin)
       @Post()
   createBookStock(@Body() createBookStockDto: createBookStockDto) {
     this.bookStockService.createBookStock(createBookStockDto);

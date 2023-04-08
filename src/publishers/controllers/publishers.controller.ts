@@ -14,7 +14,7 @@ export class PublishersController {
       return this.publisherService.fetchPublishers();
     }
     @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles(Role.Admin || Role.SuperAdmin)
+    @Roles(Role.Admin,Role.SuperAdmin)
     @Post()
     createPublisher(@Body() createPublisherDto: createPublisherDto) {
       this.publisherService.createPublisher(createPublisherDto);

@@ -14,7 +14,7 @@ export class DistributorsController {
     return this.distributorService.fetchDistributors();
   }
   @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles(Role.Admin || Role.SuperAdmin)
+  @Roles(Role.Admin,Role.SuperAdmin)
   @Post()
   createDistributor(@Body() createDistributorDto: createDistributorDto) {
     this.distributorService.createDistributor(createDistributorDto);

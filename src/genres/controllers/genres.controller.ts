@@ -14,7 +14,7 @@ export  class GenresController {
     return this.genreService.fetchGenre();
   }
   @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles(Role.Admin || Role.SuperAdmin)
+  @Roles(Role.Admin,Role.SuperAdmin)
   @Post()
   CreateGenre(@Body() createGenreDto: CreateGenreDto) {
     this.genreService.createGenre(createGenreDto);

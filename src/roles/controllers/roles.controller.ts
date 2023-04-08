@@ -17,13 +17,13 @@ constructor(private roleService: RolesService){}
         return this.roleService.fetchRoles();
     }
     @UseGuards(JwtAuthGuard,RolesGuard)
-    @Roles(Role.Admin || Role.SuperAdmin)
+    @Roles(Role.Admin,Role.SuperAdmin)
     @Post()
     createRole(@Body() createRoleDto: createRoleDto){
         this.roleService.createRole(createRoleDto);
     }
     @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles(Role.Admin || Role.SuperAdmin)
+    @Roles(Role.Admin,Role.SuperAdmin)
     @Put(':id')
    async updateRoleById(
     @Param('id', ParseIntPipe) role_id: number,
@@ -32,7 +32,7 @@ constructor(private roleService: RolesService){}
     await this.roleService.updateRole(role_id,updateRoleDto);
    }
    @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles(Role.Admin || Role.SuperAdmin)
+   @Roles(Role.Admin,Role.SuperAdmin)
    @Delete(':id')
   async deleteRoleById(
     @Param('id', ParseIntPipe) role_id: number) {

@@ -15,7 +15,7 @@ export class BooksController {
     return this.bookService.fetchBooks();
   }
   @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles(Role.Admin || Role.SuperAdmin)
+  @Roles(Role.Admin,Role.SuperAdmin)
   @Post()
   createBook(@Body() createBookDto: createBookDto) {
     this.bookService.createBook(createBookDto);
