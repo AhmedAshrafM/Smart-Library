@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createBookStockDto } from 'src/book-stocks/dtos/createBookStock.dto';
 import { dtoToEntity } from 'src/book-stocks/mapper/bookStock.mapper';
+import { entityToLog } from 'src/books/mapper/logger.mapper';
+import { Audit } from 'src/typeorm/entities/Audit';
 import { Book } from 'src/typeorm/entities/Book';
 import { BookStock } from 'src/typeorm/entities/BookStock';
 import { Distributor } from 'src/typeorm/entities/Distributor';
@@ -13,6 +15,7 @@ export class BookStocksService {
         @InjectRepository(BookStock)private bookStockRepository: Repository<BookStock>,
         @InjectRepository(Distributor) private distributorsRepository: Repository<Distributor>,
         @InjectRepository(Book) private bookRepository: Repository<Book>,
+        @InjectRepository(Audit) private loggerRepo: Repository<Audit>,
 
     ){}
     fetchBookStock(){
@@ -27,7 +30,8 @@ export class BookStocksService {
         let newBookStock: BookStock = dtoToEntity(bookStockDetails);
         newBookStock.addDistributors(distributors);
         newBookStock.addBook(book);
-    
+        let newLog: Audit = entityToLog("New Book",newBookStock,"Book Stock")
+        this.loggerRepo.save(newLog)
         return this.bookStockRepository.save(newBookStock);
       }
 }

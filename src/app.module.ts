@@ -26,6 +26,7 @@ import { LoggerModule } from './logger/logger.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/role.guard';
 import { JwtAuthGuard } from './auth';
+import { Audit } from './typeorm/entities/Audit';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -46,6 +47,7 @@ import { JwtAuthGuard } from './auth';
         Role,
         User,
         BookStock,
+        Audit,
       ],
       synchronize: true,
     }),

@@ -7,13 +7,16 @@ import { dtoToEntity } from 'src/users/mapper/user.mapper';
 import { CreateUserParams, UpdateUserParams } from 'src/utils/types';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Audit } from 'src/typeorm/entities/Audit';
+import { entityToLog } from 'src/books/mapper/logger.mapper';
 
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
-    @InjectRepository(Role) private rolesRepository: Repository<Role>
+    @InjectRepository(Role) private rolesRepository: Repository<Role>,
+    @InjectRepository(Audit) private loggerRepo: Repository<Audit>
   ) {}
 
   fetchUsers() {
@@ -25,6 +28,8 @@ export class UsersService {
     let newUser : User = dtoToEntity(userDetails);
     //newUser.addRoles(roles);
     newUser.password = await bcrypt.hash(newUser.password,10)
+    let newLog: Audit = entityToLog("New User",newUser,"Users")
+    this.loggerRepo.save(newLog)
     return this.usersRepository.save(newUser);
   }
   async findUserById(id: number){

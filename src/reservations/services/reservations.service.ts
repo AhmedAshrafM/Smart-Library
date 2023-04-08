@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { entityToLog } from 'src/books/mapper/logger.mapper';
+import { Audit } from 'src/typeorm/entities/Audit';
 import { BookStock } from 'src/typeorm/entities/BookStock';
 import { Reservation } from 'src/typeorm/entities/Reservation';
 import { User } from 'src/typeorm/entities/User';
@@ -12,7 +14,8 @@ export class ReservationsService {
     constructor(
         @InjectRepository(BookStock) private bookStockRepository: Repository<BookStock>,
         @InjectRepository(User) private userRepository: Repository<User>,
-        @InjectRepository(Reservation) private reservationRepository: Repository<Reservation>
+        @InjectRepository(Reservation) private reservationRepository: Repository<Reservation>,
+        @InjectRepository(Audit) private loggerRepo: Repository<Audit>
     ){}
 
     fetchReservations(){
@@ -24,6 +27,8 @@ export class ReservationsService {
         let newReservation : Reservation = dtoToEntity(reservationDetails);
         newReservation.addBookStock(bookStock);
         newReservation.addUser(user);
+        let newLog: Audit = entityToLog("New Reservation",newReservation,"Reservations")
+    this.loggerRepo.save(newLog)
         return this.reservationRepository.save(newReservation);
     }
 }

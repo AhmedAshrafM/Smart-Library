@@ -5,8 +5,10 @@ import { dtoToEntity } from 'src/books/mapper/book.mapper';
 import { Author } from 'src/typeorm/entities/Author';
 import { Book } from 'src/typeorm/entities/Book';
 import { Genre } from 'src/typeorm/entities/Genre';
+import { Audit } from 'src/typeorm/entities/Audit';
 import { Publisher } from 'src/typeorm/entities/Publisher';
 import { Repository } from 'typeorm';
+import { entityToLog } from '../mapper/logger.mapper';
 
 @Injectable()
 export class BooksService {
@@ -16,6 +18,7 @@ export class BooksService {
     private publishersRepository: Repository<Publisher>,
     @InjectRepository(Author) private authorRepository: Repository<Author>,
     @InjectRepository(Genre) private genreRepository: Repository<Genre>,
+    @InjectRepository(Audit) private loggerRepo: Repository<Audit>,
   ) {}
 
   fetchBooks() {
@@ -30,12 +33,13 @@ export class BooksService {
       bookDetails.authorIds,
     );
     const genres = await this.genreRepository.findByIds(bookDetails.genreIds);
-
+    
     let newBook: Book = dtoToEntity(bookDetails);
     newBook.addPublishers(publishers);
     newBook.addAuthors(authors);
     newBook.addGenres(genres);
-
+    let newLog: Audit = entityToLog("New Book",newBook,"Books")
+    this.loggerRepo.save(newLog)
     return this.booksRepository.save(newBook);
   }
 }

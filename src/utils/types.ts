@@ -22,3 +22,8 @@ export type CreateBookParams = {
   publisherIds: number[];
   genreIds:number[];
 };
+export type CreateLogParams = {
+  type: string;
+  body: any;
+  entity: string;
+}
