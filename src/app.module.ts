@@ -27,6 +27,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/role.guard';
 import { JwtAuthGuard } from './auth';
 import { Audit } from './typeorm/entities/Audit';
+import { NotificationsModule } from './notifications/notifications.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -61,7 +62,8 @@ import { Audit } from './typeorm/entities/Audit';
     BookStocksModule,
     ReservationsModule,
     AuthModule,
-    LoggerModule
+    LoggerModule,
+    NotificationsModule
   ],
   controllers: [AppController],
   providers: [AppService, {

@@ -13,8 +13,10 @@ export class Notification {
   notificationId: number;
   @Column()
   subject: string;
-  @Column()
-  payload: string;
+  @Column({
+    type: 'json'
+  })
+  payload: any;
   @ManyToOne(() => Reservation, (reservation) => reservation.notifications)
   @JoinColumn()
   reservation: Reservation;
