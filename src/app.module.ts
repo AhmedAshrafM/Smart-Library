@@ -28,6 +28,7 @@ import { RolesGuard } from './auth/role.guard';
 import { JwtAuthGuard } from './auth';
 import { Audit } from './typeorm/entities/Audit';
 import { NotificationsModule } from './notifications/notifications.module';
+import { AiClientAppModule } from './ai-client-app/ai-client-app.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -63,7 +64,8 @@ import { NotificationsModule } from './notifications/notifications.module';
     ReservationsModule,
     AuthModule,
     LoggerModule,
-    NotificationsModule
+    NotificationsModule,
+    AiClientAppModule
   ],
   controllers: [AppController],
   providers: [AppService, {
