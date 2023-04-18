@@ -42,4 +42,7 @@ export class BooksService {
     this.loggerRepo.save(newLog)
     return this.booksRepository.save(newBook);
   }
+  async findByGenre(subject: string): Promise<Book[]> {
+    return this.booksRepository.find({where: { subject }})
+  }
 }
