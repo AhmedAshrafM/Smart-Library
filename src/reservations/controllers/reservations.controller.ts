@@ -17,7 +17,7 @@ export class ReservationsController {
         return this.reservationService.fetchReservations();
     }
     @UseGuards(JwtAuthGuard,RolesGuard)
-    @Roles(Role.Admin,Role.SuperAdmin)
+    @Roles(Role.User,Role.Admin,Role.SuperAdmin)
     @Post()
     createReservation(@Body() body: createReservationDTO){
         this.reservationService.createReservation(body);
