@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth';
 import { RolesGuard } from 'src/auth/role.guard';
 import { Roles } from 'src/roles/role.decorator';
@@ -32,5 +32,12 @@ export class ReservationsController {
     @Body() updateReservationDto: updateReservationDTO ,
   ) {
    await this.reservationService.updateReservation(id,updateReservationDto);
+  }
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(Role.Admin,Role.SuperAdmin)
+  @Delete(':id')
+  async deleteReservationById(
+    @Param('id', ParseIntPipe) id: number) {
+   await this.reservationService.deleteReservation(id);
   }
 }

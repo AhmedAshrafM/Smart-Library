@@ -48,4 +48,7 @@ export class ReservationsService {
 
         return await this.reservationRepository.update( id , { ...updatedReservation });
       }
+      async deleteReservation(id: number) {
+        return this.reservationRepository.delete(id);
+      }
 }
