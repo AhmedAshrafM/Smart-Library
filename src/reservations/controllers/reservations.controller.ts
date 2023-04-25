@@ -12,7 +12,8 @@ export class ReservationsController {
     constructor(
         private reservationService: ReservationsService
     ){}
-    
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles(Role.Admin,Role.SuperAdmin)
     @Get()
     getReservations(){
         return this.reservationService.fetchReservations();
@@ -23,6 +24,8 @@ export class ReservationsController {
     createReservation(@Body() body: createReservationDTO){
         this.reservationService.createReservation(body);
     }
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles(Role.Admin,Role.SuperAdmin)
     @Put(':id')
   async updateReservationById(
     @Param('id', ParseIntPipe) id: number,
