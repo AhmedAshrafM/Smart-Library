@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { publicDecrypt } from 'crypto';
 import { Public } from 'src/auth';
 import { AiClientAppService } from './ai-client-app.service';
@@ -7,9 +7,11 @@ import { AiClientAppService } from './ai-client-app.service';
 export class AiClientAppController {
     constructor(private aiService: AiClientAppService){}
     @Public()
-    @Post()
-    async postToAi(){
-        return await this.aiService.borrow()
+    @Post('/id/:id')
+    async postToAi(
+        @Param('id', ParseIntPipe) id: number
+    ){
+        return await this.aiService.borrow(id)
     }
     
 }
