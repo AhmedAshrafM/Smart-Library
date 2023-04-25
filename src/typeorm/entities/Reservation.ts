@@ -25,17 +25,17 @@ export class Reservation {
   reservationStatus: string;
   @ManyToOne(() => User)
   @JoinColumn()
-  user: User;
+  userId: User;
   @OneToMany(() => Notification, (notification) => notification.reservation)
   @JoinColumn()
   notifications: Notification;
   @OneToOne(() => BookStock, (stock) => stock.reservation)
   @JoinColumn()
-  bookStock: BookStock;
+  bookStockId: BookStock;
   public addUser(user: User) {
-    this.user = user;
+    this.userId = user;
   }
   public addBookStock(bookStock: BookStock) {
-    this.bookStock = bookStock;
+    this.bookStockId = bookStock;
   }
 }

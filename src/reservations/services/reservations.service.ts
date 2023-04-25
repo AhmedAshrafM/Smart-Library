@@ -9,6 +9,7 @@ import { Reservation } from 'src/typeorm/entities/Reservation';
 import { User } from 'src/typeorm/entities/User';
 import { Repository } from 'typeorm';
 import { createReservationDTO } from '../dtos/createReservationDTO';
+import { updateReservationDTO } from '../dtos/updateReservationDTO.dto';
 import { dtoToEntity } from '../mapper/reservation.mapper';
 
 @Injectable()
@@ -34,6 +35,17 @@ export class ReservationsService {
         let newLog: Audit = entityToLog("New Reservation",newReservation,"Reservations")
         this.loggerRepo.save(newLog)
         this.notRepo.save(newNotifcation)
+        console.log(newReservation);
+        
         return this.reservationRepository.save(newReservation);
     }
+    async updateReservation(id: number, updateReservationDetails: updateReservationDTO) {
+        const user = await this.userRepository.findOneById(updateReservationDetails.userId);
+        const bookStock = await this.bookStockRepository.findOneById(updateReservationDetails.bookStockId)
+        let updatedReservation : Reservation = dtoToEntity(updateReservationDetails);
+        updatedReservation.addBookStock(bookStock);
+        updatedReservation.addUser(user);
+
+        return await this.reservationRepository.update( id , { ...updatedReservation });
+      }
 }
