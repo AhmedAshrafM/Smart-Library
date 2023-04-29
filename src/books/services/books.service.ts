@@ -7,7 +7,7 @@ import { Book } from 'src/typeorm/entities/Book';
 import { Genre } from 'src/typeorm/entities/Genre';
 import { Audit } from 'src/typeorm/entities/Audit';
 import { Publisher } from 'src/typeorm/entities/Publisher';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { entityToLog } from '../mapper/logger.mapper';
 
 @Injectable()
@@ -44,5 +44,22 @@ export class BooksService {
   }
   async findByGenre(subject: string): Promise<Book[]> {
     return this.booksRepository.find({where: { subject }})
+  }
+  async showByAtoZ(){
+    return this.booksRepository.find({order: {
+      bookTitle: "ASC"
+    }})
+  }
+  async showByZtoA(){
+    return this.booksRepository.find({order: {
+      bookTitle: "DESC"
+    }})
+  }
+  async showByGenre(){
+    
+    return this.booksRepository.createQueryBuilder().select("subject").addSelect("JSON_ARRAYAGG(JSON_OBJECT('bookTitle', bookTitle, 'id', id)) as books").groupBy("subject").getRawMany()
+  }
+  async showByCopyYear(){
+    return this.booksRepository.createQueryBuilder().select("copyWriteYear").addSelect("JSON_ARRAYAGG(JSON_OBJECT('bookTitle', bookTitle, 'id', id)) as books").groupBy("copyWriteYear").orderBy("copyWriteYear", "DESC").getRawMany()
   }
 }

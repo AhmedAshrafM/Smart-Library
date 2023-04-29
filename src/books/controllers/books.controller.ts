@@ -27,4 +27,28 @@ export class BooksController {
   async getBookByGenre(@Param('genre') subject:string): Promise<Book[]>{
     return this.bookService.findByGenre(subject);
   }
+  @Get('/showby/atoz')
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(Role.User,Role.Admin,Role.SuperAdmin)
+  async getBookByAlphaAsc(){
+    return this.bookService.showByAtoZ();
+  }
+  @Get('/showby/ztoa')
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(Role.User,Role.Admin,Role.SuperAdmin)
+  async getBookByAlphaDesc(){
+    return this.bookService.showByZtoA();
+  }
+  @Get('/showby/genre')
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(Role.User,Role.Admin,Role.SuperAdmin)
+  async getBookBySubject(){
+    return this.bookService.showByGenre();
+  }
+  @Get('/showby/copyyear')
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(Role.User,Role.Admin,Role.SuperAdmin)
+  async getBookByCopyYear(){
+    return this.bookService.showByCopyYear();
+  }
 }
