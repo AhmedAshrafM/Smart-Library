@@ -18,8 +18,8 @@ export class BookStocksService {
         @InjectRepository(Audit) private loggerRepo: Repository<Audit>,
 
     ){}
-    fetchBookStock(){
-        return this.bookStockRepository.find()
+    async fetchBookStock(){
+        return await this.bookStockRepository.find()
     }
     async createBookStock(bookStockDetails: createBookStockDto) {
         const distributors = await this.distributorsRepository.findOneById(
@@ -34,4 +34,20 @@ export class BookStocksService {
         this.loggerRepo.save(newLog)
         return this.bookStockRepository.save(newBookStock);
       }
+      async updateBookStock(id: number, bookStockDetails: createBookStockDto) {
+        const distributors = await this.distributorsRepository.findOneById(
+          bookStockDetails.distributorId);
+        const book = await this.bookRepository.findOneById(
+          bookStockDetails.bookId
+        );    
+        let updatedBookStock : BookStock = dtoToEntity(bookStockDetails)
+        updatedBookStock.addBook(book)
+        updatedBookStock.addDistributors(distributors)
+
+        return await this.bookStockRepository.update( id , { ...updatedBookStock });
+      }
+      async deleteBookStock(id: number) {
+        return await this.bookStockRepository.delete(id);
+      }
+    
 }

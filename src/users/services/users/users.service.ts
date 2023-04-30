@@ -35,11 +35,11 @@ export class UsersService {
   async findUserById(id: number){
     return await this.usersRepository.findOneById(id);
   }
-  updateUser(id: number, updateUserDetails: UpdateUserParams) {
-    return this.usersRepository.update( id , { ...updateUserDetails });
+  async updateUser(id: number, updateUserDetails: UpdateUserParams) {
+    return await this.usersRepository.update( id , { ...updateUserDetails });
   }
-  deleteUser(id: number) {
-    return this.usersRepository.delete(id);
+  async deleteUser(id: number) {
+    return await this.usersRepository.delete(id);
   }
   async findOne(email: string): Promise<User | undefined> {
     return this.usersRepository.findOneBy({email});

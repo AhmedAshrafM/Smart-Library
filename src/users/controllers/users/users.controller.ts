@@ -25,13 +25,13 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   @Roles(Role.Admin, Role.SuperAdmin)
-  getUsers() {
-    return this.userService.fetchUsers();
+  async getUsers() {
+    return await this.userService.fetchUsers();
   }
   @Public()
   @Post('/signup')
-  createUser(@Body() body: createUserDto) {
-    this.userService.createUser(body);
+  async createUser(@Body() body: createUserDto) {
+    return await this.userService.createUser(body);
   }
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)

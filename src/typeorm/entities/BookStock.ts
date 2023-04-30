@@ -21,7 +21,7 @@ export class BookStock {
   distributor: Distributor;
   @ManyToOne(() => Book, (book) => book.bookStocks)
   book: Book;
-  @OneToOne(() => Reservation)
+  @OneToOne(() => Reservation, {onDelete: "CASCADE"})
   reservation: Reservation;
   public addDistributors(distributor: Distributor) {
     this.distributor = distributor;
