@@ -8,17 +8,35 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class DistributorsService {
-    constructor(
-        @InjectRepository(Distributor) private distributorsRepository: Repository<Distributor>,
-        @InjectRepository(Audit) private loggerRepo: Repository<Audit>
-    ){}
-    fetchDistributors() {
-        return this.distributorsRepository.find();
-      }
-    async createDistributor(distributorDetails: createDistributorDto){
-        let newDistributor = this.distributorsRepository.create({...distributorDetails});
-        let newLog: Audit = entityToLog("New Distributor",newDistributor,"Distributors")
-    this.loggerRepo.save(newLog)
-        return this.distributorsRepository.save(newDistributor);
-    }
+  constructor(
+    @InjectRepository(Distributor)
+    private distributorsRepository: Repository<Distributor>,
+    @InjectRepository(Audit) private loggerRepo: Repository<Audit>,
+  ) {}
+  fetchDistributors() {
+    return this.distributorsRepository.find();
+  }
+  async createDistributor(distributorDetails: createDistributorDto) {
+    let newDistributor = this.distributorsRepository.create({
+      ...distributorDetails,
+    });
+    let newLog: Audit = entityToLog(
+      'New Distributor',
+      newDistributor,
+      'Distributors',
+    );
+    this.loggerRepo.save(newLog);
+    return this.distributorsRepository.save(newDistributor);
+  }
+  async updateDistributorById(
+    id: number,
+    distributorDetails: createDistributorDto,
+  ) {
+    return await this.distributorsRepository.update(id, {
+      ...distributorDetails,
+    });
+  }
+  async deleteDistributorById(id: number) {
+    return await this.distributorsRepository.delete(id);
+  }
 }
