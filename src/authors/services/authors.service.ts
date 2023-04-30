@@ -10,15 +10,21 @@ import { createAuthorDto } from '../dtos/createAuthorDto.dto';
 export class AuthorsService {
   constructor(
     @InjectRepository(Author) private authorReposiotry: Repository<Author>,
-    @InjectRepository(Audit) private loggerRepo: Repository<Audit>
+    @InjectRepository(Audit) private loggerRepo: Repository<Audit>,
   ) {}
-  fetchAuthors(){
-    return this.authorReposiotry.find();
+  async fetchAuthors() {
+    return await this.authorReposiotry.find();
   }
-  createAuthor(createAuthorDto: createAuthorDto){
-    let newAuthor = this.authorReposiotry.create({...createAuthorDto})
-    let newLog: Audit = entityToLog("New Author",newAuthor,"Authors")
-    this.loggerRepo.save(newLog)
-    return this.authorReposiotry.save(newAuthor);
+  async createAuthor(createAuthorDto: createAuthorDto) {
+    let newAuthor = this.authorReposiotry.create({ ...createAuthorDto });
+    let newLog: Audit = entityToLog('New Author', newAuthor, 'Authors');
+    this.loggerRepo.save(newLog);
+    return await this.authorReposiotry.save(newAuthor);
+  }
+  async updateAuthorById(id: number, authorDetails: createAuthorDto) {
+    return await this.authorReposiotry.update(id, { ...authorDetails });
+  }
+  async deleteAuthorById(id: number) {
+    return await this.authorReposiotry.delete(id);
   }
 }

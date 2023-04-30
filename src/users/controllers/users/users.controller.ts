@@ -22,9 +22,9 @@ import { UsersService } from 'src/users/services/users/users.service';
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
-  @UseGuards(JwtAuthGuard,RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
-  @Roles(Role.Admin,Role.SuperAdmin)
+  @Roles(Role.Admin, Role.SuperAdmin)
   getUsers() {
     return this.userService.fetchUsers();
   }
@@ -33,19 +33,19 @@ export class UsersController {
   createUser(@Body() body: createUserDto) {
     this.userService.createUser(body);
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @Put(':id')
   async updateUserById(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: updateUserDto,
   ) {
-   await this.userService.updateUser(id,updateUserDto);
+    await this.userService.updateUser(id, updateUserDto);
   }
-  @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles(Role.Admin,Role.SuperAdmin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @Delete(':id')
-  async deleteUserById(
-    @Param('id', ParseIntPipe) id: number) {
-   await this.userService.deleteUser(id);
+  async deleteUserById(@Param('id', ParseIntPipe) id: number) {
+    await this.userService.deleteUser(id);
   }
 }
