@@ -62,4 +62,27 @@ export class BooksService {
   async showByCopyYear(){
     return this.booksRepository.createQueryBuilder().select("copyWriteYear").addSelect("JSON_ARRAYAGG(JSON_OBJECT('bookTitle', bookTitle, 'id', id)) as books").groupBy("copyWriteYear").orderBy("copyWriteYear", "DESC").getRawMany()
   }
+  async updateBook(id: number, bookDetails: createBookDto) {
+    const publishers = await this.publishersRepository.findByIds(
+      bookDetails.publisherIds,
+    );
+    const authors = await this.authorRepository.findByIds(
+      bookDetails.authorIds,
+    );
+    const genres = await this.genreRepository.findByIds(bookDetails.genreIds);
+    let bookToUpdate = await this.booksRepository.createQueryBuilder("book").leftJoinAndSelect("book.authors","author").leftJoinAndSelect("book.genres","genre").leftJoinAndSelect("book.publishers","publisher").where("book.id = :id", {id: id}).getOne()
+   bookToUpdate.bookTitle = bookDetails.bookTitle
+   bookToUpdate.copyWriteYear = bookDetails.copyWriteYear
+   bookToUpdate.editionNumber = bookDetails.editionNumber
+   bookToUpdate.subject = bookDetails.subject
+   bookToUpdate.numberOfPages = bookDetails.numberOfPages
+   bookToUpdate.authors = authors
+   bookToUpdate.genres = genres
+   bookToUpdate.publishers = publishers
+
+    return await this.booksRepository.save(bookToUpdate)
+  }
+  async deleteBook(id: number) {
+    return this.booksRepository.delete(id);
+  }
 }

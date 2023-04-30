@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { BooksService } from 'src/books/services/books.service';
 import { createBookDto } from 'src/books/dtos/createBook.dto';
 import { JwtAuthGuard, Public } from 'src/auth';
@@ -51,4 +51,20 @@ export class BooksController {
   async getBookByCopyYear(){
     return this.bookService.showByCopyYear();
   }
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(Role.Admin,Role.SuperAdmin)
+  @Put(':id')
+  async updateReservationById(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() createBookDto: createBookDto ,
+  ) {
+   await this.bookService.updateBook(id,createBookDto);
+  }
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(Role.Admin,Role.SuperAdmin)
+  @Delete(':id')
+  async deleteBookById(
+    @Param('id', ParseIntPipe) id: number) {
+      return await this.bookService.deleteBook(id)
+}
 }
