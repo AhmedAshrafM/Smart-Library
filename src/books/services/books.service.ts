@@ -9,6 +9,8 @@ import { Audit } from 'src/typeorm/entities/Audit';
 import { Publisher } from 'src/typeorm/entities/Publisher';
 import { DataSource, Repository } from 'typeorm';
 import { entityToLog } from '../mapper/logger.mapper';
+import { Reservation } from 'src/typeorm/entities/Reservation';
+import { BookStock } from 'src/typeorm/entities/BookStock';
 
 @Injectable()
 export class BooksService {
@@ -19,6 +21,7 @@ export class BooksService {
     @InjectRepository(Author) private authorRepository: Repository<Author>,
     @InjectRepository(Genre) private genreRepository: Repository<Genre>,
     @InjectRepository(Audit) private loggerRepo: Repository<Audit>,
+    @InjectRepository(Reservation) private reservationRepo: Repository<Reservation>
   ) {}
 
   fetchBooks() {
@@ -84,5 +87,13 @@ export class BooksService {
   }
   async deleteBook(id: number) {
     return this.booksRepository.delete(id);
+  }
+  async myBooks(id: number){
+  return await this.booksRepository.createQueryBuilder("book")
+    .select()
+    .innerJoin(BookStock,"book_stock", "book.id = book_stock.bookId")
+    .innerJoin(Reservation,"reservation", "book_stock.id = reservation.bookStockId")
+    .where("reservation.userId = :userId", { userId: id}).getMany()
+    
   }
 }

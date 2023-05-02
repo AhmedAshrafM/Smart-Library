@@ -24,13 +24,13 @@ export class Reservation {
   @Column({default:"pending"})
   reservationStatus: string;
   @ManyToOne(() => User)
-  @JoinColumn()
+  @JoinColumn({name: "userId"})
   userId: User;
   @OneToMany(() => Notification, (notification) => notification.reservation)
   @JoinColumn()
   notifications: Notification;
   @OneToOne(() => BookStock, (stock) => stock.reservation)
-  @JoinColumn()
+  @JoinColumn({name:"bookStockId"})
   bookStockId: BookStock;
   public addUser(user: User) {
     this.userId = user;

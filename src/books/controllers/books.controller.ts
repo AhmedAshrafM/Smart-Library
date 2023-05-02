@@ -67,4 +67,11 @@ export class BooksController {
     @Param('id', ParseIntPipe) id: number) {
       return await this.bookService.deleteBook(id)
 }
+@UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(Role.User,Role.Admin,Role.SuperAdmin)
+  @Get('/id/:id')
+  async getUserBooks(
+    @Param('id', ParseIntPipe) id: number) {
+      return await this.bookService.myBooks(id)
+}
 }

@@ -7,9 +7,10 @@ import { Publisher } from 'src/typeorm/entities/Publisher';
 import { Author } from 'src/typeorm/entities/Author';
 import { Genre } from 'src/typeorm/entities/Genre';
 import { Audit } from 'src/typeorm/entities/Audit';
+import { Reservation } from 'src/typeorm/entities/Reservation';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Book, Author, Publisher, Genre, Audit])],
+  imports: [TypeOrmModule.forFeature([Book, Author, Publisher, Genre, Audit, Reservation])],
   providers: [BooksService],
   controllers: [BooksController],
 })
