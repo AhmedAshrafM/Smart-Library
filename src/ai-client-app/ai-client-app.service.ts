@@ -17,4 +17,16 @@ export class AiClientAppService {
         );
         return data;
       }
+      async updateAlgorithm(algorithmId: number): Promise<any>{
+        const { data } = await firstValueFrom(
+          this.httpService.post<any>("http://127.0.0.1:5000/update_config", {"algorithmId": algorithmId})
+          .pipe(
+            catchError((error: AxiosError) => {
+              throw error;
+            }),
+          ),
+        );
+
+        return data;
+      }
 }

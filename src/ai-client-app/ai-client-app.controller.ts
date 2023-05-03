@@ -13,5 +13,11 @@ export class AiClientAppController {
     ){
         return await this.aiService.borrow(id)
     }
-    
+    @Public()
+    @Post("/algorithm/:id")
+    async updateConfig(
+        @Param('id' ,ParseIntPipe) id:number
+    ){
+        return await this.aiService.updateAlgorithm(id)
+    }
 }
