@@ -96,4 +96,7 @@ export class BooksService {
     .where("reservation.userId = :userId", { userId: id}).getMany()
     
   }
+  async searchBooks(bookTitle:string){    
+    return await this.booksRepository.createQueryBuilder('book').where('bookTitle LIKE :title',{title: `%${bookTitle}%`}).getMany()
+  }
 }
