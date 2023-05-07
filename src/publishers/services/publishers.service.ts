@@ -21,4 +21,13 @@ export class PublishersService {
     this.loggerRepo.save(newLog)
         return this.publishersRepository.save(newPublisher);
     }
+    async updatePublisherById(id: number, publishersDetails: createPublisherDto) {
+        return await this.publishersRepository.update(id, { ...publishersDetails });
+      }
+      async getPublisherById(id: number) {
+        return await this.publishersRepository.findOneById(id);
+      }
+      async deletePublisherById(id: number) {
+        return await this.publishersRepository.delete(id);
+      }
 }

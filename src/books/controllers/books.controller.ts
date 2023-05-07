@@ -15,6 +15,12 @@ export class BooksController {
   getBooks() {
     return this.bookService.fetchBooks();
   }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @Get(':id')
+  async getABookById(@Param('id', ParseIntPipe) id: number) {
+    return await this.bookService.getBookById(id);
+  }
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Roles(Role.Admin,Role.SuperAdmin)
   @Post()

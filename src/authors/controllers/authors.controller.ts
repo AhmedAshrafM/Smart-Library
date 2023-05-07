@@ -44,4 +44,10 @@ export class AuthorsController {
   async deleteAuthorById(@Param('id', ParseIntPipe) id: number) {
     await this.authorService.deleteAuthorById(id);
   }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @Get(':id')
+  async getAuthorById(@Param('id', ParseIntPipe) id: number) {
+    return await this.authorService.getAuthorById(id);
+  }
 }

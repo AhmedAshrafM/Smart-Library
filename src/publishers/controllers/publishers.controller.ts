@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth';
 import { RolesGuard } from 'src/auth/role.guard';
 import { Roles } from 'src/roles/role.decorator';
@@ -19,4 +19,25 @@ export class PublishersController {
     createPublisher(@Body() createPublisherDto: createPublisherDto) {
       this.publisherService.createPublisher(createPublisherDto);
     }
+    @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @Get(':id')
+  async getPublisherById(@Param('id', ParseIntPipe) id: number) {
+    return await this.publisherService.getPublisherById(id);
+  }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @Put(':id')
+  async updatePublisherById(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() createPublisherDto: createPublisherDto,
+  ) {
+    await this.publisherService.updatePublisherById(id, createPublisherDto);
+  }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @Delete(':id')
+  async deletePublisherById(@Param('id', ParseIntPipe) id: number) {
+    await this.publisherService.deletePublisherById(id);
+  }
 }

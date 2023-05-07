@@ -21,4 +21,13 @@ export class GenresService {
     this.loggerRepo.save(newLog)
     return this.genreRepository.save(newGenre);
   }
+  async updateGenreById(id: number, createGenreDTO: CreateGenreDto) {
+    return await this.genreRepository.update(id, { ...createGenreDTO });
+  }
+  async getGenreById(id: number) {
+    return await this.genreRepository.findOneById(id);
+  }
+  async deleteGenreById(id: number) {
+    return await this.genreRepository.delete(id);
+  }
 }

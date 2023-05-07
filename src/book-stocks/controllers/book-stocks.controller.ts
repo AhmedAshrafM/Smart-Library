@@ -34,4 +34,10 @@ export class BookStocksController {
   async deleteUserById(@Param('id', ParseIntPipe) id: number) {
     await this.bookStockService.deleteBookStock(id);
   }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @Get(':id')
+  async getBookStockById(@Param('id', ParseIntPipe) id: number) {
+    return await this.bookStockService.getBookStockById(id);
+  }
 }

@@ -47,4 +47,10 @@ export class DistributorsController {
   async deleteDistributorById(@Param('id', ParseIntPipe) id: number) {
     await this.distributorService.deleteDistributorById(id);
   }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @Get(':id')
+  async getDistribById(@Param('id', ParseIntPipe) id: number) {
+    return await this.distributorService.getDistributorById(id);
+  }
 }

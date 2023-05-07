@@ -27,4 +27,7 @@ export class AuthorsService {
   async deleteAuthorById(id: number) {
     return await this.authorReposiotry.delete(id);
   }
+  async getAuthorById(id: number) {
+    return await this.authorReposiotry.findOneById(id);
+  }
 }

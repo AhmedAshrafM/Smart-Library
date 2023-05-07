@@ -39,4 +39,7 @@ export class DistributorsService {
   async deleteDistributorById(id: number) {
     return await this.distributorsRepository.delete(id);
   }
+  async getDistributorById(id: number) {
+    return await this.distributorsRepository.findOneById(id);
+  }
 }

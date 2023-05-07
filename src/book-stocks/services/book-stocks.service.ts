@@ -49,5 +49,8 @@ export class BookStocksService {
       async deleteBookStock(id: number) {
         return await this.bookStockRepository.delete(id);
       }
+      async getBookStockById(id: number) {
+        return await this.bookStockRepository.findOneById(id);
+      }
     
 }

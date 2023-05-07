@@ -92,4 +92,7 @@ export class ReservationsService {
   async deleteReservation(id: number) {
     return this.reservationRepository.delete(id);
   }
+  async getReservationById(id: number) {
+    return await this.reservationRepository.findOneById(id);
+  }
 }
