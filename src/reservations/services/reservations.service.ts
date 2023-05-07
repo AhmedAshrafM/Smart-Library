@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { entityToLog } from 'src/books/mapper/logger.mapper';
 import { eventToNotification } from 'src/notifications/notifications.mapper';
 import { Audit } from 'src/typeorm/entities/Audit';
+import { Book } from 'src/typeorm/entities/Book';
 import { BookStock } from 'src/typeorm/entities/BookStock';
 import { Notification } from 'src/typeorm/entities/Notification';
 import { Reservation } from 'src/typeorm/entities/Reservation';
@@ -22,6 +23,7 @@ export class ReservationsService {
     private reservationRepository: Repository<Reservation>,
     @InjectRepository(Audit) private loggerRepo: Repository<Audit>,
     @InjectRepository(Notification) private notRepo: Repository<Notification>,
+    @InjectRepository(Book) private bookRepo: Repository<Book>,
   ) {}
 
   fetchReservations() {
@@ -33,9 +35,23 @@ export class ReservationsService {
     const user = await this.userRepository.findOneById(
       reservationDetails.userId,
     );
-    const bookStock = await this.bookStockRepository.findOneById(
-      reservationDetails.bookStockId,
-    );
+    const bookStock = await this.bookStockRepository
+      .createQueryBuilder('book_stock')
+      .select("book_stock.id")
+      .leftJoin(
+        Reservation,
+        'reservation',
+        'book_stock.id = reservation.bookStockId',
+      )
+      .where(
+        "book_stock.bookId = :bookId AND (reservation.reservationStatus IS NULL OR reservation.reservationStatus != 'Active')",
+        { bookId: reservationDetails.bookStockId },
+      ).getOne();
+    console.log(bookStock);
+
+    if (!bookStock) {
+      throw new ConflictException('Book is not available for reservation.');
+    }
     let newReservation: Reservation = dtoToEntity(reservationDetails);
     newReservation.addBookStock(bookStock);
     newReservation.addUser(user);

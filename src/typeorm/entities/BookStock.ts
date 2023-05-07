@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -21,7 +22,7 @@ export class BookStock {
   distributor: Distributor;
   @ManyToOne(() => Book, (book) => book.bookStocks)
   book: Book;
-  @OneToOne(() => Reservation, {onDelete: "CASCADE"})
+  @OneToMany(() => Reservation,(reservation)=> reservation.bookStockId,{onDelete: "CASCADE"})
   reservation: Reservation;
   public addDistributors(distributor: Distributor) {
     this.distributor = distributor;

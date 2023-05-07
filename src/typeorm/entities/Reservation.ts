@@ -29,7 +29,7 @@ export class Reservation {
   @OneToMany(() => Notification, (notification) => notification.reservation)
   @JoinColumn()
   notifications: Notification;
-  @OneToOne(() => BookStock, (stock) => stock.reservation)
+  @ManyToOne(() => BookStock, (stock) => stock.reservation)
   @JoinColumn({name:"bookStockId"})
   bookStockId: BookStock;
   public addUser(user: User) {
