@@ -19,7 +19,9 @@ export class BookStocksService {
 
     ){}
     async fetchBookStock(){
-        return await this.bookStockRepository.find()
+        return await this.bookStockRepository.find({
+          relations: ["book","distributor"]
+        })
     }
     async createBookStock(bookStockDetails: createBookStockDto) {
         const distributors = await this.distributorsRepository.findOneById(
