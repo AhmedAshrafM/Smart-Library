@@ -14,8 +14,6 @@ import { Reservation } from './Reservation';
 export class BookStock {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ default: 0 })
-  bookStock: number;
   @Column()
   shelf: string;
   @ManyToOne(() => Distributor, (distributor) => distributor.bookStocks)

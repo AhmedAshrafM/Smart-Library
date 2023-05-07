@@ -6,9 +6,9 @@ import { catchError, firstValueFrom, Observable } from 'rxjs';
 @Injectable()
 export class AiClientAppService {
     constructor(private readonly httpService: HttpService){} 
-      async borrow(id: number): Promise<any> {
+      async borrow(id: number, algorithm: string): Promise<any> {
         const { data } = await firstValueFrom(
-          this.httpService.post<any>('http://127.0.0.1:5000/get_books', {"user_id" : id
+          this.httpService.post<any>('http://127.0.0.1:5000/get_books', {"user_id" : id,"algorithm": algorithm
         }).pipe(
             catchError((error: AxiosError) => {
               throw error;
