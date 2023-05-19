@@ -100,6 +100,6 @@ export class BooksService {
     return await this.booksRepository.createQueryBuilder('book').where('bookTitle LIKE :title',{title: `%${bookTitle}%`}).getMany()
   }
   async getBookById(id: number) {
-    return await this.booksRepository.findOneById(id);
+    return await this.booksRepository.find({where:{id : id},relations: ["genres","authors","publishers"]});
   }
 }
