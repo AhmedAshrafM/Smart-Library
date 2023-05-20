@@ -80,6 +80,13 @@ export class BooksController {
     @Param('id', ParseIntPipe) id: number) {
       return await this.bookService.myBooks(id)
 }
+@UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(Role.User,Role.Admin,Role.SuperAdmin)
+  @Get('/stock/:id')
+  async getBookStock(
+    @Param('id', ParseIntPipe) id: number) {
+      return await this.bookService.getBookStockCount(id)
+}
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Roles(Role.User,Role.Admin,Role.SuperAdmin)
   @Get('/search/:bookTitle')

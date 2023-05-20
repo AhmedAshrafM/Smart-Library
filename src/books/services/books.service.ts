@@ -21,7 +21,8 @@ export class BooksService {
     @InjectRepository(Author) private authorRepository: Repository<Author>,
     @InjectRepository(Genre) private genreRepository: Repository<Genre>,
     @InjectRepository(Audit) private loggerRepo: Repository<Audit>,
-    @InjectRepository(Reservation) private reservationRepo: Repository<Reservation>
+    @InjectRepository(Reservation) private reservationRepo: Repository<Reservation>,
+    @InjectRepository(BookStock) private bookStockRepo: Repository<BookStock>
   ) {}
 
   fetchBooks() {
@@ -101,5 +102,10 @@ export class BooksService {
   }
   async getBookById(id: number) {
     return await this.booksRepository.find({where:{id : id},relations: ["genres","authors","publishers"]});
+  }
+  async getBookStockCount(id: number){
+    return await this.bookStockRepo.createQueryBuilder().select().where(
+      "bookId = :id",{id: id}
+    ).getCount()
   }
 }
