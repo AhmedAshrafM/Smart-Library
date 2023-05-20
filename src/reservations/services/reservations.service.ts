@@ -95,4 +95,9 @@ export class ReservationsService {
   async getReservationById(id: number) {
     return await this.reservationRepository.findOneById(id);
   }
+  async getReservationByUserId(id: number){
+    return await this.reservationRepository.createQueryBuilder().select().where(
+      "userId = :id",{id:id}
+    ).getMany()
+  }
 }
