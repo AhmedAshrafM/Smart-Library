@@ -25,7 +25,7 @@ export class Book {
   editionNumber: number;
   @Column()
   numberOfPages: number;
-  @ManyToMany(() => Genre, (genre) => genre.books, {onDelete: "CASCADE"})
+  @ManyToMany(() => Genre, (genre) => genre.books, {onUpdate: "CASCADE"})
   genres: Genre[];
   @ManyToMany(() => Author, (author) => author.books, {onUpdate: 'CASCADE'})
   @JoinTable({ name: 'books_authors' })

@@ -27,10 +27,10 @@ export class BooksController {
   createBook(@Body() createBookDto: createBookDto) {
     this.bookService.createBook(createBookDto);
   }
-  @Get('/:genre')
+  @Get('/genre/:genre')
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Roles(Role.User,Role.Admin,Role.SuperAdmin)
-  async getBookByGenre(@Param('genre') subject:string): Promise<Book[]>{
+  async getBookByGenre(@Param('genre') subject:any){
     return this.bookService.findByGenre(subject);
   }
   @Get('/showby/atoz')

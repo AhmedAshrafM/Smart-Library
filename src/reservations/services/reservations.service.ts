@@ -93,11 +93,11 @@ export class ReservationsService {
     return this.reservationRepository.delete(id);
   }
   async getReservationById(id: number) {
-    return await this.reservationRepository.findOneById(id);
+    return await this.reservationRepository.find({where:{id: id},relations:['userId', 'bookStockId']});
   }
   async getReservationByUserId(id: number){
     return await this.reservationRepository.createQueryBuilder().select().where(
-      "userId = :id",{id:id}
+      "userId = :id AND (reservation.reservationStatus = 'Active' OR reservation.reservationStatus ='Done')" ,{id:id}
     ).getMany()
   }
 }

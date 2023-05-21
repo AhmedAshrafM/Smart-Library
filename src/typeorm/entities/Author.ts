@@ -7,7 +7,7 @@ export class Author {
     id: number;
     @Column()
     authorName: string;
-    @ManyToMany(() => Book, (book) => book.authors, {onUpdate: 'CASCADE'})
+    @ManyToMany(() => Book, (book) => book.authors, {onUpdate: 'CASCADE',onDelete: 'CASCADE'})
     books: Book[];
 
 }

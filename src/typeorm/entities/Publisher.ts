@@ -13,6 +13,6 @@ export class Publisher {
   id: number;
   @Column()
   publisherName: string;
-  @ManyToMany(() => Book)
+  @ManyToMany(() => Book,{onDelete:"CASCADE"})
   books: Book[];
 }

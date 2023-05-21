@@ -46,9 +46,7 @@ export class BooksService {
     this.loggerRepo.save(newLog)
     return this.booksRepository.save(newBook);
   }
-  async findByGenre(subject: string): Promise<Book[]> {
-    return this.booksRepository.find({where: { subject }})
-  }
+ 
   async showByAtoZ(){
     return this.booksRepository.find({order: {
       bookTitle: "ASC"
@@ -85,6 +83,9 @@ export class BooksService {
    bookToUpdate.publishers = publishers
 
     return await this.booksRepository.save(bookToUpdate)
+  }
+  async findByGenre(subject: any) {
+    return this.booksRepository.find({where: { subject: subject }})
   }
   async deleteBook(id: number) {
     return this.booksRepository.delete(id);

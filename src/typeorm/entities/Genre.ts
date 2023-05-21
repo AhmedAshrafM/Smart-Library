@@ -13,7 +13,7 @@ export class Genre {
   id: number;
   @Column()
   genreName: string;
-  @ManyToMany(() => Book, (book) => book.genres, { cascade: ['remove'] })
+  @ManyToMany(() => Book, (book) => book.genres, { onDelete:"CASCADE" })
   @JoinTable({name:'books_genres'})
   books: Book[];
 }
