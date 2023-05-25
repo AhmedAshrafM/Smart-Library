@@ -97,7 +97,7 @@ export class ReservationsService {
   }
   async getReservationByUserId(id: number){
     return await this.reservationRepository.createQueryBuilder().select().where(
-      "userId = :id AND (reservation.reservationStatus = 'Active' OR reservation.reservationStatus ='Done')" ,{id:id}
+      "userId = :id" ,{id:id}
     ).getMany()
   }
 }

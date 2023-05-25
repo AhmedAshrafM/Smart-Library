@@ -95,7 +95,7 @@ export class BooksService {
     .select()
     .innerJoin(BookStock,"book_stock", "book.id = book_stock.bookId")
     .innerJoin(Reservation,"reservation", "book_stock.id = reservation.bookStockId")
-    .where("reservation.userId = :userId", { userId: id}).getMany()
+    .where("reservation.userId = :userId AND (reservation.reservationStatus = 'Active' OR reservation.reservationStatus ='Done') ", { userId: id}).getMany()
     
   }
   async searchBooks(bookTitle:string){    
