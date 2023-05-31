@@ -93,4 +93,10 @@ export class BooksController {
   async searchBookByTitle(@Param('bookTitle') bookTitle: string) {
       return await this.bookService.searchBooks(bookTitle)
 } 
+@UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(Role.User,Role.Admin,Role.SuperAdmin)
+  @Get('/home/MBB')
+  async getMostBorrowedBooks() {
+      return await this.bookService.getMostBorrowedBooks()
+} 
 }
