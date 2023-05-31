@@ -25,7 +25,7 @@ export class ReservationsController {
     return await this.reservationService.getReservationById(id);
   }
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin, Role.SuperAdmin)
+  @Roles(Role.User,Role.Admin, Role.SuperAdmin)
   @Get('/user/:id')
   async getReservationsByUserId(@Param('id', ParseIntPipe) id: number) {
     return await this.reservationService.getReservationByUserId(id);
