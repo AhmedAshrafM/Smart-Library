@@ -47,8 +47,6 @@ export class ReservationsService {
         "book_stock.bookId = :bookId AND (reservation.reservationStatus IS NULL OR reservation.reservationStatus != 'Active')",
         { bookId: reservationDetails.bookStockId },
       ).getOne();
-    console.log(bookStock);
-
     if (!bookStock) {
       throw new ConflictException('Book is not available for reservation.');
     }
@@ -99,5 +97,20 @@ export class ReservationsService {
     return await this.reservationRepository.createQueryBuilder().select().where(
       "userId = :id" ,{id:id}
     ).getMany()
+  }
+  async getOverDueBooks(){
+    return await this.reservationRepository.createQueryBuilder().select().where(
+      "dueDate < current_date()"
+    ).getMany()
+  }
+  async getMostBorrowedGenres() {
+    return await this.reservationRepository
+    .createQueryBuilder('reservation')
+    .select('genre.genreName, COUNT(*) as Count')
+    .innerJoin('reservation.bookStockId', 'bookStock')
+    .innerJoin('bookStock.book', 'book')
+    .innerJoin('book.genres', 'genre')
+    .groupBy('genre.genreName')
+    .getRawMany()
   }
 }

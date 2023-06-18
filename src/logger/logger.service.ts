@@ -12,10 +12,13 @@ export class LoggerService {
     constructor(
         @InjectRepository(Audit) private loggerRepo: Repository<Audit>
     ){}
-    @UseGuards(JwtAuthGuard,RolesGuard)
-    @Roles(Role.SuperAdmin)
-    @Get()
-    fetchLog() {
-        return this.loggerRepo.find();
+    async fetchLog() {
+        return await this.loggerRepo.find();
       }
+    
+   async getUserActivity(){
+        return await this.loggerRepo.createQueryBuilder().select().where(
+            "audit.type = 'New Reservation' OR audit.type = 'New User'"
+        ).getMany()
+    }
 }
