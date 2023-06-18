@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { entityToLog } from 'src/books/mapper/logger.mapper';
 import { CreateGenreDto } from 'src/genres/dtos/createGenreDto.dto';
@@ -10,24 +10,49 @@ import { Repository } from 'typeorm';
 export class GenresService {
   constructor(
     @InjectRepository(Genre) private genreRepository: Repository<Genre>,
-    @InjectRepository(Audit) private loggerRepo: Repository<Audit>
+    @InjectRepository(Audit) private loggerRepository: Repository<Audit>
   ) {}
+
   fetchGenre() {
     return this.genreRepository.find();
   }
+
   createGenre(createGenreDTO: CreateGenreDto) {
     let newGenre = this.genreRepository.create({ ...createGenreDTO });
-    let newLog: Audit = entityToLog("New Genre",newGenre,"Genres")
-    this.loggerRepo.save(newLog)
+
+    const newLog: Audit = entityToLog('New Genre', newGenre, 'Genres');
+    this.loggerRepository.save(newLog);
+
     return this.genreRepository.save(newGenre);
   }
+
   async updateGenreById(id: number, createGenreDTO: CreateGenreDto) {
+    const genre = await this.genreRepository.findOneById(id);
+
+    if (!genre) {
+      throw new NotFoundException('Genre not found');
+    }
+
     return await this.genreRepository.update(id, { ...createGenreDTO });
   }
+
   async getGenreById(id: number) {
-    return await this.genreRepository.findOneById(id);
+    const genre = await this.genreRepository.findOneById(id);
+
+    if (!genre) {
+      throw new NotFoundException('Genre not found');
+    }
+
+    return genre;
   }
+
   async deleteGenreById(id: number) {
+    const genre = await this.genreRepository.findOneById(id);
+
+    if (!genre) {
+      throw new NotFoundException('Genre not found');
+    }
+
     return await this.genreRepository.delete(id);
   }
 }

@@ -13,9 +13,7 @@ export class AuthService {
         const valid = await Bcrypt.compare(pass,user.password);
         
         if(!user || !valid){
-            console.log("error");
-            
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("Wrong username or password");
         }
         
         return user

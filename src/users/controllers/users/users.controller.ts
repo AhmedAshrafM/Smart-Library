@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
@@ -22,17 +24,28 @@ import { UsersService } from 'src/users/services/users/users.service';
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   @Roles(Role.Admin, Role.SuperAdmin)
   async getUsers() {
-    return await this.userService.fetchUsers();
+    try {
+      return await this.userService.fetchUsers();
+    } catch (error) {
+      throw new NotFoundException('Failed to fetch users.');
+    }
   }
+
   @Public()
   @Post('/signup')
   async createUser(@Body() body: createUserDto) {
-    return await this.userService.createUser(body);
+    try {
+      return await this.userService.createUser(body);
+    } catch (error) {
+      throw new BadRequestException('Failed to create user.');
+    }
   }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)
   @Put(':id')
@@ -40,18 +53,32 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: updateUserDto,
   ) {
-    await this.userService.updateUser(id, updateUserDto);
+    try {
+      await this.userService.updateUser(id, updateUserDto);
+    } catch (error) {
+      throw new NotFoundException('Failed to update user, ID not found.');
+    }
   }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)
   @Delete(':id')
   async deleteUserById(@Param('id', ParseIntPipe) id: number) {
-    await this.userService.deleteUser(id);
+    try {
+      await this.userService.deleteUser(id);
+    } catch (error) {
+      throw new NotFoundException('Failed to delete user, ID not found.');
+    }
   }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)
   @Get(':id')
   async getUserById(@Param('id', ParseIntPipe) id: number) {
-    return await this.userService.findUserById(id);
+    try {
+      return await this.userService.findUserById(id);
+    } catch (error) {
+      throw new NotFoundException('Failed to fetch user, ID not found.');
+    }
   }
 }

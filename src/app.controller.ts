@@ -1,4 +1,13 @@
-import { Controller, Dependencies, Bind, Get, Request, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Dependencies,
+  Bind,
+  Get,
+  Request,
+  Post,
+  UseGuards,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
@@ -16,13 +25,21 @@ export class AppController {
   @Post('auth/login')
   @Bind(Request())
   async login(req) {
-    return this.authService.login(req.user);
+    try {
+      return await this.authService.login(req.user);
+    } catch (error) {
+      throw new NotFoundException('Login failed.');
+    }
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   @Bind(Request())
   getProfile(req) {
-    return req.user;
+    try {
+      return req.user;
+    } catch (error) {
+      throw new NotFoundException('Failed to retrieve profile.');
+    }
   }
 }

@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth';
 import { RolesGuard } from 'src/auth/role.guard';
 import { Roles } from 'src/roles/role.decorator';
@@ -7,24 +19,40 @@ import { CreateGenreDto } from '../dtos/createGenreDto.dto';
 import { GenresService } from '../services/genres.service';
 
 @Controller('genres')
-export  class GenresController {
+export class GenresController {
   constructor(private genreService: GenresService) {}
+
   @Get()
-  getGenres() {
-    return this.genreService.fetchGenre();
+  async getGenres() {
+    try {
+      return await this.genreService.fetchGenre();
+    } catch (error) {
+      throw new NotFoundException('Failed to fetch genres.');
+    }
   }
-  @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles(Role.Admin,Role.SuperAdmin)
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
   @Post()
-  CreateGenre(@Body() createGenreDto: CreateGenreDto) {
-    this.genreService.createGenre(createGenreDto);
+  async createGenre(@Body() createGenreDto: CreateGenreDto) {
+    try {
+      return await this.genreService.createGenre(createGenreDto);
+    } catch (error) {
+      throw new ConflictException('Failed to create genre.');
+    }
   }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)
   @Get(':id')
   async getGenreById(@Param('id', ParseIntPipe) id: number) {
-    return await this.genreService.getGenreById(id);
+    try {
+      return await this.genreService.getGenreById(id);
+    } catch (error) {
+      throw new NotFoundException('Failed to fetch genre by ID.');
+    }
   }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)
   @Put(':id')
@@ -32,12 +60,21 @@ export  class GenresController {
     @Param('id', ParseIntPipe) id: number,
     @Body() createGenreDto: CreateGenreDto,
   ) {
-    await this.genreService.updateGenreById(id, createGenreDto);
+    try {
+      return await this.genreService.updateGenreById(id, createGenreDto);
+    } catch (error) {
+      throw new NotFoundException('Failed to update genre.');
+    }
   }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)
   @Delete(':id')
   async deleteGenreById(@Param('id', ParseIntPipe) id: number) {
-    await this.genreService.deleteGenreById(id);
+    try {
+      return await this.genreService.deleteGenreById(id);
+    } catch (error) {
+      throw new NotFoundException('Failed to delete genre.');
+    }
   }
 }

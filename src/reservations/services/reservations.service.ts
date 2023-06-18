@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { entityToLog } from 'src/books/mapper/logger.mapper';
 import { eventToNotification } from 'src/notifications/notifications.mapper';
@@ -31,10 +31,14 @@ export class ReservationsService {
       relations: ['userId', 'bookStockId'],
     });
   }
+
   async createReservation(reservationDetails: createReservationDTO) {
     const user = await this.userRepository.findOneById(
       reservationDetails.userId,
     );
+    if(!user){
+      throw new NotFoundException('User is not found')
+    }
     const bookStock = await this.bookStockRepository
       .createQueryBuilder('book_stock')
       .select("book_stock.id")
@@ -46,7 +50,7 @@ export class ReservationsService {
       .where(
         "book_stock.bookId = :bookId AND (reservation.reservationStatus IS NULL OR reservation.reservationStatus != 'Active')",
         { bookId: reservationDetails.bookStockId },
-      ).getOne();
+      ).andWhere("reservation.id NOT IN (SELECT reservation.id FROM reservation r WHERE r.bookStockId = book_stock.id AND r.reservationStatus = 'Active' )").getOne();
     if (!bookStock) {
       throw new ConflictException('Book is not available for reservation.');
     }
@@ -65,10 +69,10 @@ export class ReservationsService {
     );
     this.loggerRepo.save(newLog);
     this.notRepo.save(newNotifcation);
-    console.log(newReservation);
 
     return this.reservationRepository.save(newReservation);
   }
+
   async updateReservation(
     id: number,
     updateReservationDetails: updateReservationDTO,
@@ -79,6 +83,9 @@ export class ReservationsService {
     const bookStock = await this.bookStockRepository.findOneById(
       updateReservationDetails.bookStockId,
     );
+    if (!user || !bookStock) {
+      throw new NotFoundException('User or book stock not found');
+    }
     let updatedReservation: Reservation = dtoToEntity(updateReservationDetails);
     updatedReservation.addBookStock(bookStock);
     updatedReservation.addUser(user);
@@ -87,22 +94,31 @@ export class ReservationsService {
       ...updatedReservation,
     });
   }
+
   async deleteReservation(id: number) {
-    return this.reservationRepository.delete(id);
+    const reservation = await this.reservationRepository.findOneById(id);
+    if (!reservation) {
+      throw new NotFoundException('Reservation not found');
+    }
+    return await this.reservationRepository.delete(id);
   }
+
   async getReservationById(id: number) {
     return await this.reservationRepository.find({where:{id: id},relations:['userId', 'bookStockId']});
   }
+
   async getReservationByUserId(id: number){
     return await this.reservationRepository.createQueryBuilder().select().where(
       "userId = :id" ,{id:id}
     ).getMany()
   }
-  async getOverDueBooks(){
+
+  async getOverDueBooks() {
     return await this.reservationRepository.createQueryBuilder().select().where(
-      "dueDate < current_date()"
-    ).getMany()
+      'dueDate < current_date()',
+    ).getMany();
   }
+
   async getMostBorrowedGenres() {
     return await this.reservationRepository
     .createQueryBuilder('reservation')
@@ -111,6 +127,6 @@ export class ReservationsService {
     .innerJoin('bookStock.book', 'book')
     .innerJoin('book.genres', 'genre')
     .groupBy('genre.genreName')
-    .getRawMany()
+    .getRawMany();
   }
 }
