@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { entityToLog } from 'src/books/mapper/logger.mapper';
 import { eventToNotification } from 'src/notifications/notifications.mapper';
@@ -36,12 +40,12 @@ export class ReservationsService {
     const user = await this.userRepository.findOneById(
       reservationDetails.userId,
     );
-    if(!user){
-      throw new NotFoundException('User is not found')
+    if (!user) {
+      throw new NotFoundException('User is not found');
     }
     const bookStock = await this.bookStockRepository
       .createQueryBuilder('book_stock')
-      .select("book_stock.id")
+      .select('book_stock.id')
       .leftJoin(
         Reservation,
         'reservation',
@@ -50,7 +54,11 @@ export class ReservationsService {
       .where(
         "book_stock.bookId = :bookId AND (reservation.reservationStatus IS NULL OR reservation.reservationStatus != 'Active')",
         { bookId: reservationDetails.bookStockId },
-      ).andWhere("reservation.id NOT IN (SELECT reservation.id FROM reservation r WHERE r.bookStockId = book_stock.id AND r.reservationStatus = 'Active' )").getOne();
+      )
+      .andWhere(
+        "reservation.id NOT IN (SELECT reservation.id FROM reservation r WHERE r.bookStockId = book_stock.id AND r.reservationStatus = 'Active' )",
+      )
+      .getOne();
     if (!bookStock) {
       throw new ConflictException('Book is not available for reservation.');
     }
@@ -104,29 +112,42 @@ export class ReservationsService {
   }
 
   async getReservationById(id: number) {
-    return await this.reservationRepository.find({where:{id: id},relations:['userId', 'bookStockId']});
+    return await this.reservationRepository.find({
+      where: { id: id },
+      relations: ['userId', 'bookStockId'],
+    });
   }
 
-  async getReservationByUserId(id: number){
-    return await this.reservationRepository.createQueryBuilder().select().where(
-      "userId = :id" ,{id:id}
-    ).getMany()
+  async getReservationByUserId(id: number) {
+    return await this.reservationRepository.find({
+      where: { userId: { id } },
+      relations: ['bookStockId'],
+      join: {
+        alias: 'reservation',
+        innerJoin: {
+          bookStockId: 'reservation.bookStockId',
+          book: 'bookStockId.book',
+        },
+      },
+    });
   }
 
   async getOverDueBooks() {
-    return await this.reservationRepository.createQueryBuilder().select().where(
-      'dueDate < current_date()',
-    ).getMany();
+    return await this.reservationRepository
+      .createQueryBuilder()
+      .select()
+      .where('dueDate < current_date()')
+      .getMany();
   }
 
   async getMostBorrowedGenres() {
     return await this.reservationRepository
-    .createQueryBuilder('reservation')
-    .select('genre.genreName, COUNT(*) as Count')
-    .innerJoin('reservation.bookStockId', 'bookStock')
-    .innerJoin('bookStock.book', 'book')
-    .innerJoin('book.genres', 'genre')
-    .groupBy('genre.genreName')
-    .getRawMany();
+      .createQueryBuilder('reservation')
+      .select('genre.genreName, COUNT(*) as Count')
+      .innerJoin('reservation.bookStockId', 'bookStock')
+      .innerJoin('bookStock.book', 'book')
+      .innerJoin('book.genres', 'genre')
+      .groupBy('genre.genreName')
+      .getRawMany();
   }
 }
