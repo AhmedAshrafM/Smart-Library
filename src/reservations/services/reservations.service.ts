@@ -136,7 +136,7 @@ export class ReservationsService {
     return await this.reservationRepository
       .createQueryBuilder()
       .select()
-      .where('dueDate < current_date()')
+      .where('dueDate < current_date()' && 'reservationStatus = :status', {status: 'Active'})
       .getMany();
   }
 
@@ -148,6 +148,15 @@ export class ReservationsService {
       .innerJoin('bookStock.book', 'book')
       .innerJoin('book.genres', 'genre')
       .groupBy('genre.genreName')
+      .getRawMany();
+  }
+  async getMostBorrowedBooks() {
+    return await this.reservationRepository
+      .createQueryBuilder('reservation')
+      .select('book.bookTitle, COUNT(*) as Count')
+      .innerJoin('reservation.bookStockId', 'bookStock')
+      .innerJoin('bookStock.book', 'book')
+      .groupBy('book.bookTitle')
       .getRawMany();
   }
 }

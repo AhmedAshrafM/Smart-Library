@@ -115,4 +115,17 @@ export class ReservationsController {
       throw new NotFoundException('Failed to get most borrowed genres report.');
     }
   }
+  
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.SuperAdmin)
+  @Get('/report/MostBorrowedBooks')
+  async getMostBorrowedBooks() {
+    try{
+      return await this.reservationService.getMostBorrowedBooks();
+    }catch (error){
+      console.log(error);
+      
+      throw new NotFoundException('Failed to get most borrowed books report.');
+    }
+}
 }
