@@ -4,6 +4,7 @@ import { entityToLog } from 'src/books/mapper/logger.mapper';
 import { CreateGenreDto } from 'src/genres/dtos/createGenreDto.dto';
 import { Audit } from 'src/typeorm/entities/Audit';
 import { Genre } from 'src/typeorm/entities/Genre';
+import { checkIfDataExists } from 'src/utils/checkIfDataExists.utils';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -17,7 +18,8 @@ export class GenresService {
     return this.genreRepository.find();
   }
 
-  createGenre(createGenreDTO: CreateGenreDto) {
+  async createGenre(createGenreDTO: CreateGenreDto) {
+    await checkIfDataExists (this.genreRepository, 'genreName', createGenreDTO.genreName);
     let newGenre = this.genreRepository.create({ ...createGenreDTO });
 
     const newLog: Audit = entityToLog('New Genre', newGenre, 'Genres');

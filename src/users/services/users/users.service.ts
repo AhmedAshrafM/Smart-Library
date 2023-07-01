@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/typeorm/entities/Roles';
 import { User } from 'src/typeorm/entities/User';
@@ -23,6 +23,10 @@ export class UsersService {
   }
 
   async createUser(userDetails: createUserDto) {
+    const user = await this.usersRepository.findOneBy({email: userDetails.email});
+    if (user) {
+      throw new ConflictException('User already exists');
+    }
     let newUser: User = dtoToEntity(userDetails);
     newUser.password = await bcrypt.hash(newUser.password, 10);
     let newLog: Audit = entityToLog('New User', newUser, 'Users');

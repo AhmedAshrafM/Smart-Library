@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth';
@@ -16,6 +17,7 @@ import { RolesGuard } from 'src/auth/role.guard';
 import { Roles } from 'src/roles/role.decorator';
 import Role from 'src/roles/role.enum';
 import { createReservationDTO } from '../dtos/createReservationDTO';
+import { ReservationFilters } from '../dtos/resultDTO.dto';
 import { updateReservationDTO } from '../dtos/updateReservationDTO.dto';
 import { ReservationsService } from '../services/reservations.service';
 
@@ -25,14 +27,17 @@ export class ReservationsController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)
-  @Get()
-  getReservations() {
+  @Get('getReservations')
+  async getReservations(@Query() filters?: ReservationFilters) {
     try {
-      return this.reservationService.fetchReservations();
+      const reservations = await this.reservationService.fetchReservations(filters);
+      return reservations;
     } catch (error) {
       throw new NotFoundException('Failed to fetch reservations.');
     }
   }
+  
+
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)

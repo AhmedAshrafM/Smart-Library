@@ -42,7 +42,7 @@ export class UsersController {
     try {
       return await this.userService.createUser(body);
     } catch (error) {
-      throw new BadRequestException('Failed to create user.');
+      throw new BadRequestException('Failed to create user. Email may already exists.');
     }
   }
 

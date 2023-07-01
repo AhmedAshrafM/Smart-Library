@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { entityToLog } from 'src/books/mapper/logger.mapper';
 import { Audit } from 'src/typeorm/entities/Audit';
 import { Publisher } from 'src/typeorm/entities/Publisher';
+import { checkIfDataExists } from 'src/utils/checkIfDataExists.utils';
 import { Repository } from 'typeorm';
 import { createPublisherDto } from '../dtos/createPublisher.dto';
 
@@ -18,6 +19,7 @@ export class PublishersService {
   }
 
   async createPublisher(publishersDetails: createPublisherDto) {
+    await checkIfDataExists (this.publishersRepository, 'publisherName', publishersDetails.publisherName);
     let newPublisher = this.publishersRepository.create({ ...publishersDetails });
 
     const newLog: Audit = entityToLog('New Publisher', newPublisher, 'Publishers');

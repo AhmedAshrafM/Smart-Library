@@ -34,7 +34,7 @@ export class AuthorsController {
     try {
       return await this.authorService.createAuthor(createAuthorDto);
     } catch (error) {
-      throw new ConflictException('Failed to create author.');
+      throw new ConflictException('Author Already Exists.');
     }
   }
 

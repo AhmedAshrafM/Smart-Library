@@ -38,7 +38,7 @@ export class PublishersController {
     try {
       return await this.publisherService.createPublisher(createPublisherDto);
     } catch (error) {
-      throw new ConflictException('Failed to create publisher.');
+      throw new ConflictException('Failed to create publisher. Name may already exists.');
     }
   }
 

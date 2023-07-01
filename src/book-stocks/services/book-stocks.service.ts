@@ -68,7 +68,7 @@ export class BookStocksService {
   }
 
   async getBookStockById(id: number) {
-    const bookStock = await this.bookStockRepository.findOneById(id);
+    const bookStock = await this.bookStockRepository.find({where: {id: id}, relations: ['book', 'distributor']});
 
     if (!bookStock) {
       throw new NotFoundException('Book Stock not found');

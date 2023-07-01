@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -26,8 +27,12 @@ export class DistributorsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)
   @Post()
-  createDistributor(@Body() createDistributorDto: createDistributorDto) {
-    this.distributorService.createDistributor(createDistributorDto);
+  async createDistributor(@Body() createDistributorDto: createDistributorDto) {
+    try{
+    return await this.distributorService.createDistributor(createDistributorDto);
+    }catch(error){
+      throw new ConflictException('Failed to create distributor, name may already exists.');
+    }
   }
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)

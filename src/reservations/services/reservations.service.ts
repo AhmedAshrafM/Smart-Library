@@ -15,6 +15,7 @@ import { User } from 'src/typeorm/entities/User';
 import { Repository } from 'typeorm';
 import { createReservationDTO } from '../dtos/createReservationDTO';
 import { updateReservationDTO } from '../dtos/updateReservationDTO.dto';
+import { ReservationFilters } from '../dtos/resultDTO.dto';   
 import { dtoToEntity } from '../mapper/reservation.mapper';
 
 @Injectable()
@@ -30,11 +31,40 @@ export class ReservationsService {
     @InjectRepository(Book) private bookRepo: Repository<Book>,
   ) {}
 
-  fetchReservations() {
-    return this.reservationRepository.find({
-      relations: ['userId', 'bookStockId'],
-    });
+  async fetchReservations(filters?: ReservationFilters) {
+    const queryBuilder = this.reservationRepository.createQueryBuilder('reservation');
+    queryBuilder.leftJoinAndSelect('reservation.userId', 'user');
+    queryBuilder.leftJoinAndSelect('reservation.bookStockId', 'bookStock');
+  
+    if (filters) {
+      if (filters.userId) {
+        queryBuilder.andWhere('reservation.userId = :userId', { userId: filters.userId });
+      }
+  
+      if (filters.reservationStatus) {
+        queryBuilder.andWhere('reservation.reservationStatus = :status', { status: filters.reservationStatus });
+      }
+  
+      if (filters.dueDate) {
+        queryBuilder.andWhere('reservation.dueDate = :dueDate', { dueDate: filters.dueDate });
+      }
+  
+      if (filters.returnDate) {
+        queryBuilder.andWhere('reservation.returnDate = :returnDate', { returnDate: filters.returnDate });
+      }
+  
+      if (filters.reservationDate) {
+        queryBuilder.andWhere('reservation.reservationDate = :reservationDate', { reservationDate: filters.reservationDate });
+      }
+  
+      if (filters.bookStockId) {
+        queryBuilder.andWhere('reservation.bookStockId = :bookStockId', { bookStockId: filters.bookStockId });
+      }
+    }
+  
+    return queryBuilder.getMany();
   }
+  
 
   async createReservation(reservationDetails: createReservationDTO) {
     const user = await this.userRepository.findOneById(

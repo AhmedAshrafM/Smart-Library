@@ -52,7 +52,7 @@ export class BooksController {
     try {
       return await this.bookService.createBook(createBookDto);
     } catch (error) {
-      throw new ConflictException('Failed to create book.');
+      throw new ConflictException('Failed to add book, Check if it was already added before !!');
     }
   }
 

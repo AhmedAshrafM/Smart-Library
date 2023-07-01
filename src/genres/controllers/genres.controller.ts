@@ -38,7 +38,7 @@ export class GenresController {
     try {
       return await this.genreService.createGenre(createGenreDto);
     } catch (error) {
-      throw new ConflictException('Failed to create genre.');
+      throw new ConflictException('Failed to create genre. Name may already exists.');
     }
   }
 

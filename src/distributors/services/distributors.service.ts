@@ -4,6 +4,7 @@ import { entityToLog } from 'src/books/mapper/logger.mapper';
 import { createDistributorDto } from 'src/distributors/dtos/createDistributor.to';
 import { Audit } from 'src/typeorm/entities/Audit';
 import { Distributor } from 'src/typeorm/entities/Distributor';
+import { checkIfDataExists } from 'src/utils/checkIfDataExists.utils';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -18,6 +19,7 @@ export class DistributorsService {
   }
 
   async createDistributor(distributorDetails: createDistributorDto) {
+    await checkIfDataExists(this.distributorsRepository, 'distributorName', distributorDetails.distributorName);
     let newDistributor = this.distributorsRepository.create({
       ...distributorDetails,
     });

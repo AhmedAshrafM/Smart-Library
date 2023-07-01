@@ -65,7 +65,7 @@ import { AiClientAppModule } from './ai-client-app/ai-client-app.module';
     AuthModule,
     LoggerModule,
     NotificationsModule,
-    AiClientAppModule
+    AiClientAppModule,
   ],
   controllers: [AppController],
   providers: [AppService, {

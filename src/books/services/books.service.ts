@@ -11,6 +11,7 @@ import { DataSource, Repository } from 'typeorm';
 import { entityToLog } from '../mapper/logger.mapper';
 import { Reservation } from 'src/typeorm/entities/Reservation';
 import { BookStock } from 'src/typeorm/entities/BookStock';
+import { checkIfDataExists } from 'src/utils/checkIfDataExists.utils';
 
 @Injectable()
 export class BooksService {
@@ -36,7 +37,7 @@ export class BooksService {
     if (!publishers.length || !authors.length || !genres.length) {
       throw new NotFoundException('Publishers, Authors, or Genres not found');
     }
-
+    await checkIfDataExists(this.booksRepository, 'bookTitle', bookDetails.bookTitle);
     let newBook: Book = dtoToEntity(bookDetails);
     newBook.addPublishers(publishers);
     newBook.addAuthors(authors);
