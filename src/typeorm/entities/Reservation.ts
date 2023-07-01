@@ -26,7 +26,7 @@ export class Reservation {
   @ManyToOne(() => User)
   @JoinColumn({name: "userId"})
   userId: User;
-  @OneToMany(() => Notification, (notification) => notification.reservation)
+  @OneToMany(() => Notification, (notification) => notification.reservation, {onDelete: 'CASCADE'})
   @JoinColumn()
   notifications: Notification;
   @ManyToOne(() => BookStock, (stock) => stock.reservation)

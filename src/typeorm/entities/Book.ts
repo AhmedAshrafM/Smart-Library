@@ -25,12 +25,12 @@ export class Book {
   editionNumber: number;
   @Column()
   numberOfPages: number;
-  @ManyToMany(() => Genre, (genre) => genre.books, {onUpdate: "CASCADE"})
+  @ManyToMany(() => Genre, (genre) => genre.books, {onUpdate: "CASCADE",onDelete: "CASCADE"})
   genres: Genre[];
-  @ManyToMany(() => Author, (author) => author.books, {onUpdate: 'CASCADE'})
+  @ManyToMany(() => Author, (author) => author.books, {onUpdate: 'CASCADE',onDelete: 'CASCADE'})
   @JoinTable({ name: 'books_authors' })
   authors: Author[];
-  @ManyToMany(() => Publisher, (publisher) => publisher.books)
+  @ManyToMany(() => Publisher, (publisher) => publisher.books, {onUpdate: 'CASCADE',onDelete: 'CASCADE'})
   @JoinTable({ name: 'books_publishers' })
   publishers: Publisher[];
   @OneToMany(() => BookStock, (bookstock) => bookstock.book, {onDelete: 'CASCADE'})
