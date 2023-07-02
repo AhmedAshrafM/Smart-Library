@@ -46,15 +46,24 @@ export class ReservationsService {
       }
   
       if (filters.dueDate) {
-        queryBuilder.andWhere('reservation.dueDate = :dueDate', { dueDate: filters.dueDate });
+        const dueDate = new Date(filters.dueDate);
+        const nextDay = new Date(dueDate.getTime() + 86400000); 
+        queryBuilder.andWhere('reservation.dueDate >= :startDate', { startDate: dueDate });
+        queryBuilder.andWhere('reservation.dueDate < :endDate', { endDate: nextDay });
       }
   
       if (filters.returnDate) {
-        queryBuilder.andWhere('reservation.returnDate = :returnDate', { returnDate: filters.returnDate });
+        const returnDate = new Date(filters.returnDate);
+        const nextDay = new Date(returnDate.getTime() + 86400000); 
+        queryBuilder.andWhere('reservation.returnDate >= :startDate', { startDate: returnDate });
+        queryBuilder.andWhere('reservation.returnDate < :endDate', { endDate: nextDay });
       }
   
       if (filters.reservationDate) {
-        queryBuilder.andWhere('reservation.reservationDate = :reservationDate', { reservationDate: filters.reservationDate });
+        const reservationDate = new Date(filters.reservationDate);
+        const nextDay = new Date(reservationDate.getTime() + 86400000); 
+        queryBuilder.andWhere('reservation.reservationDate >= :startDate', { startDate: reservationDate });
+        queryBuilder.andWhere('reservation.reservationDate < :endDate', { endDate: nextDay });
       }
   
       if (filters.bookStockId) {
@@ -64,6 +73,7 @@ export class ReservationsService {
   
     return queryBuilder.getMany();
   }
+  
   
 
   async createReservation(reservationDetails: createReservationDTO) {
@@ -151,7 +161,7 @@ export class ReservationsService {
   async getReservationByUserId(id: number) {
     return await this.reservationRepository.find({
       where: { userId: { id } },
-      relations: ['bookStockId'],
+      relations: ['bookStockId','bookStockId.book'],
       join: {
         alias: 'reservation',
         innerJoin: {
