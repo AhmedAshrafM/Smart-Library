@@ -96,7 +96,7 @@ export class ReservationsService {
         'book_stock.id = reservation.bookStockId',
       )
       .where(
-        "book_stock.bookId = :bookId AND (reservation.reservationStatus IS NULL OR reservation.reservationStatus != 'Active' OR reservation.reservationStatus != 'Late' OR reservation.reservationStatus != 'Accepted'')",
+        "book_stock.bookId = :bookId AND (reservation.reservationStatus IS NULL OR reservation.reservationStatus != 'Active' OR reservation.reservationStatus != 'Late' OR reservation.reservationStatus != 'Accepted')",
         { bookId: reservationDetails.bookStockId },
       )
       .andWhere(
