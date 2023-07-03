@@ -154,7 +154,7 @@ export class ReservationsService {
   async getReservationById(id: number) {
     return await this.reservationRepository.find({
       where: { id: id },
-      relations: ['userId', 'bookStockId'],
+      relations: ['userId', 'bookStockId','bookStockId.book'],
     });
   }
 
