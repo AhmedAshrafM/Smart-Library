@@ -13,4 +13,10 @@ export class ReservationFilters {
     reservationDate?: Date;
     @IsOptional()
     bookStockId?: number;
+    @IsOptional()
+    bookTitle?: string;
+    @IsOptional()
+    genreName?: string;
+    @IsOptional()
+    distributorName?: string;
   }

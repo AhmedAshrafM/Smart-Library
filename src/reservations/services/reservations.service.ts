@@ -35,6 +35,7 @@ export class ReservationsService {
     const queryBuilder = this.reservationRepository.createQueryBuilder('reservation');
     queryBuilder.leftJoinAndSelect('reservation.userId', 'user');
     queryBuilder.leftJoinAndSelect('reservation.bookStockId', 'bookStock');
+    queryBuilder.leftJoinAndSelect('bookStock.book', 'book')
   
     if (filters) {
       if (filters.userId) {
@@ -69,6 +70,9 @@ export class ReservationsService {
       if (filters.bookStockId) {
         queryBuilder.andWhere('reservation.bookStockId = :bookStockId', { bookStockId: filters.bookStockId });
       }
+      if (filters.bookTitle){
+        queryBuilder.andWhere('book.bookTitle = :bookTitle', { bookTitle: filters.bookTitle });
+      }
     }
   
     return queryBuilder.getMany();
@@ -92,11 +96,11 @@ export class ReservationsService {
         'book_stock.id = reservation.bookStockId',
       )
       .where(
-        "book_stock.bookId = :bookId AND (reservation.reservationStatus IS NULL OR reservation.reservationStatus != 'Active')",
+        "book_stock.bookId = :bookId AND (reservation.reservationStatus IS NULL OR reservation.reservationStatus != 'Active' OR reservation.reservationStatus != 'Late' OR reservation.reservationStatus != 'Accepted'')",
         { bookId: reservationDetails.bookStockId },
       )
       .andWhere(
-        "reservation.id NOT IN (SELECT reservation.id FROM reservation r WHERE r.bookStockId = book_stock.id AND r.reservationStatus = 'Active' )",
+        "reservation.id NOT IN (SELECT reservation.id FROM reservation r WHERE r.bookStockId = book_stock.id AND (r.reservationStatus = 'Active' OR reservation.reservationStatus != 'Late' OR reservation.reservationStatus != 'Accepted') )",
       )
       .getOne();
     if (!bookStock) {
@@ -173,11 +177,11 @@ export class ReservationsService {
   }
 
   async getOverDueBooks() {
-    return await this.reservationRepository
-      .createQueryBuilder()
-      .select()
-      .where('dueDate < current_date()' && 'reservationStatus = :status', {status: 'Active'})
-      .getMany();
+    const queryBuilder = this.reservationRepository.createQueryBuilder();
+  
+    queryBuilder.where('(dueDate < current_date() AND (reservationStatus = :status OR reservationStatus = :additionalStatus))', { status: 'Active', additionalStatus: 'Late' });
+  
+    return await queryBuilder.getMany();
   }
 
   async getMostBorrowedGenres() {
@@ -198,5 +202,58 @@ export class ReservationsService {
       .innerJoin('bookStock.book', 'book')
       .groupBy('book.bookTitle')
       .getRawMany();
+  }
+  async reportGeneration(filters?: ReservationFilters) {
+    const queryBuilder = await this.reservationRepository.createQueryBuilder('reservation');
+    queryBuilder.leftJoinAndSelect('reservation.userId', 'user');
+    queryBuilder.leftJoinAndSelect('reservation.bookStockId', 'bookStock');
+    queryBuilder.leftJoinAndSelect('bookStock.book', 'book')
+    queryBuilder.leftJoinAndSelect('book.genres', 'genre')
+    queryBuilder.leftJoinAndSelect('bookStock.distributor', 'distributor')
+    if (filters) {
+      if (filters.userId) {
+        queryBuilder.andWhere('reservation.userId = :userId', { userId: filters.userId });
+      }
+  
+      if (filters.reservationStatus) {
+        queryBuilder.andWhere('reservation.reservationStatus = :status', { status: filters.reservationStatus });
+      }
+  
+      if (filters.dueDate) {
+        const dueDate = new Date(filters.dueDate);
+        const nextDay = new Date(dueDate.getTime() + 86400000); 
+        queryBuilder.andWhere('reservation.dueDate >= :startDate', { startDate: dueDate });
+        queryBuilder.andWhere('reservation.dueDate < :endDate', { endDate: nextDay });
+      }
+  
+      if (filters.returnDate) {
+        const returnDate = new Date(filters.returnDate);
+        const nextDay = new Date(returnDate.getTime() + 86400000); 
+        queryBuilder.andWhere('reservation.returnDate >= :startDate', { startDate: returnDate });
+        queryBuilder.andWhere('reservation.returnDate < :endDate', { endDate: nextDay });
+      }
+  
+      if (filters.reservationDate) {
+        const reservationDate = new Date(filters.reservationDate);
+        const nextDay = new Date(reservationDate.getTime() + 86400000); 
+        queryBuilder.andWhere('reservation.reservationDate >= :startDate', { startDate: reservationDate });
+        queryBuilder.andWhere('reservation.reservationDate < :endDate', { endDate: nextDay });
+      }
+  
+      if (filters.bookStockId) {
+        queryBuilder.andWhere('reservation.bookStockId = :bookStockId', { bookStockId: filters.bookStockId });
+      }
+      if (filters.bookTitle){
+        queryBuilder.andWhere('book.bookTitle = :bookTitle', { bookTitle: filters.bookTitle });
+      }
+      if(filters.genreName){
+        queryBuilder.andWhere('genre.genreName = :genreName', { genreName: filters.genreName });
+      }
+      if(filters.distributorName){
+        queryBuilder.andWhere('distributor.distributorName = :distributorName', { distributorName: filters.distributorName });
+      }
+    }
+  
+    return queryBuilder.getMany();
   }
 }

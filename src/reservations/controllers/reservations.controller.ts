@@ -98,7 +98,17 @@ export class ReservationsController {
       throw new NotFoundException('Failed to delete reservation, ID not found.');
     }
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.Admin, Role.SuperAdmin)
+@Get('/report/ReportGenerator')
+async getReportGenerator(@Query() filters?: ReservationFilters) {
+  try {
+    const reservations = await this.reservationService.reportGeneration(filters);
+    return reservations;
+  } catch (error) {
+    throw new NotFoundException('Failed to fetch reservations.');
+  }
+}
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin, Role.SuperAdmin)
   @Get('/report/overdue')
